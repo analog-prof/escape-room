@@ -1,0 +1,239 @@
+<!DOCTYPE html>
+<html lang="hr">
+<head>
+<meta charset="UTF-8">
+<title>Escape Room Terminal</title>
+<style>
+body {background:#000; color:#00ff00; font-family: 'Courier New', monospace; margin:20px;}
+#header {
+    background:#000; 
+    padding:10px; 
+    font-size:32px; 
+    border:1px solid #00ff00; 
+    border-radius:5px;
+    margin-bottom:30px; /* prostor između timera i levela */
+}
+.level {display:none; font-size:28px; border:2px solid #00ff00; padding:20px; border-radius:10px; min-height:250px; margin-bottom:20px; background-color:#000;}
+input {padding:10px; font-size:28px; width:60%; background:#000; color:#00ff00; border:2px solid #00ff00; border-radius:5px; margin-top:10px;}
+button {padding:10px 20px; font-size:28px; background:#000; color:#00ff00; border:2px solid #00ff00; border-radius:5px; cursor:pointer; margin-top:10px;}
+table {border:2px solid #00ff00; color:#00ff00; font-size:28px; font-family: 'Courier New', monospace; border-collapse: collapse; margin-top:20px;}
+table td, table th {border:1px solid #00ff00; padding:10px; text-align:center;}
+</style>
+</head>
+<body>
+
+<div id="header">TIMER: <span id="timer">30:00</span></div>
+
+<div id="escape-room-container">
+
+    <!-- LEVEL 1 -->
+    <div id="level1" class="level" style="display:block;">
+        <div id="text1"></div>
+        <input id="ans1" placeholder="Upiši rješenje..."><br>
+        <button id="ans1Btn">Potvrdi</button>
+        <p id="msg1"></p>
+    </div>
+
+    <!-- LEVEL 2 -->
+    <div id="level2" class="level">
+        <div id="text2"></div>
+        <input id="ans2" placeholder="Upiši rješenje..."><br>
+        <button id="ans2Btn">Potvrdi</button>
+        <p id="msg2"></p>
+    </div>
+
+    <!-- LEVEL 3 -->
+    <div id="level3" class="level">
+        <div id="text3"></div>
+        <input id="ans3" placeholder="Upiši rješenje..."><br>
+        <button id="ans3Btn">Potvrdi</button>
+        <p id="msg3"></p>
+    </div>
+
+    <!-- LEVEL 4 -->
+    <div id="level4" class="level">
+        <div id="text4"></div>
+        <input id="ans4" placeholder="Upiši rješenje..."><br>
+        <button id="ans4Btn">Potvrdi</button>
+        <p id="msg4"></p>
+    </div>
+
+    <!-- LEVEL 5 -->
+    <div id="level5" class="level">
+        <div id="text5"></div>
+        <input id="ans5" placeholder="Upiši rješenje..."><br>
+        <button id="ans5Btn">Potvrdi</button>
+        <p id="msg5"></p>
+    </div>
+
+    <!-- LEVEL 6 -->
+    <div id="level6" class="level">
+        <div id="text6">
+Razina 6: Šifra u matrici<br>
+Upiši riječ prema koordinatama: A1, A2, A3, A4, E5, B5, B2, B3
+        </div>
+
+        <table>
+            <tr>
+                <th></th><th>A</th><th>B</th><th>C</th><th>D</th><th>E</th>
+            </tr>
+            <tr><th>1</th><td>P</td><td>X</td><td>Q</td><td>W</td><td>E</td></tr>
+            <tr><th>2</th><td>A</td><td>R</td><td>T</td><td>Y</td><td>U</td></tr>
+            <tr><th>3</th><td>S</td><td>D</td><td>F</td><td>G</td><td>H</td></tr>
+            <tr><th>4</th><td>S</td><td>J</td><td>K</td><td>L</td><td>Z</td></tr>
+            <tr><th>5</th><td>W</td><td>O</td><td>V</td><td>B</td><td>N</td></tr>
+        </table>
+
+        <input id="ans6" placeholder="Upiši rješenje..."><br>
+        <button id="ans6Btn">Potvrdi</button>
+        <p id="msg6"></p>
+    </div>
+
+    <!-- LEVEL 7 -->
+    <div id="level7" class="level">
+        <div id="text7"></div>
+        <input id="ans7" placeholder="Upiši rješenje..."><br>
+        <button id="ans7Btn">Potvrdi</button>
+        <p id="msg7"></p>
+    </div>
+
+    <!-- UPLOAD TRAKA -->
+    <div id="uploadContainer" class="level" style="display:none;">
+        <div>Upload dešifriranih podataka...</div>
+        <div style="width:100%; border:2px solid #00ff00; border-radius:5px; margin-top:10px;">
+            <div id="uploadBar" style="width:0%; height:30px; background:#00ff00; text-align:center; color:#000; font-weight:bold;">0%</div>
+        </div>
+    </div>
+
+</div>
+
+<script>
+// ----- TIMER -----
+let totalSeconds = 30*60;
+let timerElement = document.getElementById("timer");
+
+function formatTime(seconds){
+    let m = Math.floor(seconds/60);
+    let s = seconds % 60;
+    return `${m.toString().padStart(2,'0')}:${s.toString().padStart(2,'0')}`;
+}
+
+let countdown = setInterval(()=>{
+    if(totalSeconds <= 0){
+        clearInterval(countdown);
+        timerElement.textContent = "VRIJEME ISTEKLO!";
+        for(let i=1;i<=7;i++){
+            document.getElementById("ans"+i).disabled = true;
+            document.getElementById("ans"+i+"Btn").disabled = true;
+        }
+        alert("SERVER UNIŠTEN! Igra je završila.");
+    } else {
+        totalSeconds--;
+        timerElement.textContent = formatTime(totalSeconds);
+    }
+},1000);
+
+// ----- POGREŠAN ODGOVOR -----
+function wrongAnswer(){
+    totalSeconds -= 120; // oduzmi 2 minute
+    if(totalSeconds < 0) totalSeconds = 0;
+    timerElement.style.color = "red";
+    setTimeout(()=>{ timerElement.style.color="#00ff00"; },500);
+}
+
+// ----- TYPING EFFECT -----
+function typeText(elementId, text, speed=50){
+    let i=0;
+    const el = document.getElementById(elementId);
+    el.textContent="";
+    const interval = setInterval(()=>{
+        el.textContent += text.charAt(i);
+        i++;
+        if(i>=text.length) clearInterval(interval);
+    }, speed);
+}
+
+// ----- TEKSTOVI ZA RAZINE -----
+const levelTexts = [
+    "Razina 1: Dešifriraj Cezarovu šifru (pomak -3)\nSBWKRQ",
+    "Razina 2: Prevedi Morsov kod\n... . .-. ...- . .-.",
+    "Razina 3: Pretvori ASCII kod u slova\n77 65 88",
+    "Razina 4: Heksadekadski kod u ASCII\n43 6F 64 65",
+    "Razina 5: Šifra prema boji (RGB)\nrgb(0, 255, 0)",
+    "Razina 6: Šifra u matrici",
+    "Razina 7: Pretvori binarni kod u slova\n01010011 01000001 01000110 01000101"
+];
+
+// ----- PROVJERA ODGOVORA -----
+function checkAnswer(inputId, correct, msgId, currentLevel, nextLevel, nextTextId, nextText){
+    const user = document.getElementById(inputId).value.trim().toUpperCase();
+    const msg = document.getElementById(msgId);
+    if(user===correct){
+        msg.textContent = "✅ Točno!";
+        msg.style.color="#00ff00";
+        if(nextLevel!==""){
+            setTimeout(()=>{
+                document.getElementById(currentLevel).style.display="none";
+                document.getElementById(nextLevel).style.display="block";
+                if(nextTextId) typeText(nextTextId, nextText);
+            },500);
+        }
+    } else {
+        msg.textContent = "❌ Pogrešno! Oduzeto 2 minute.";
+        wrongAnswer();
+    }
+}
+
+// ----- FUNKCIJE ZA SVAKI LEVEL -----
+function provjeri1(){checkAnswer("ans1","PYTHON","msg1","level1","level2","text2",levelTexts[1]);}
+function provjeri2(){checkAnswer("ans2","SERVER","msg2","level2","level3","text3",levelTexts[2]);}
+function provjeri3(){checkAnswer("ans3","MAX","msg3","level3","level4","text4",levelTexts[3]);}
+function provjeri4(){checkAnswer("ans4","CODE","msg4","level4","level5","text5",levelTexts[4]);}
+function provjeri5(){checkAnswer("ans5","GREEN","msg5","level5","level6","text6",levelTexts[5]);}
+function provjeri6(){checkAnswer("ans6","PASSWORD","msg6","level6","level7","text7",levelTexts[6]);}
+function provjeri7(){
+    const user = document.getElementById("ans7").value.trim().toUpperCase();
+    const msg = document.getElementById("msg7");
+    if(user==="SAFE"){
+        msg.textContent = "✅ Točno! Svi podaci dešifrirani!";
+        msg.style.color="#00ff00";
+        clearInterval(countdown);
+        for(let i=1;i<=7;i++){
+            document.getElementById("ans"+i).disabled = true;
+            document.getElementById("ans"+i+"Btn").disabled = true;
+        }
+        // Pokaži upload traku
+        document.getElementById("uploadContainer").style.display="block";
+        let bar = document.getElementById("uploadBar");
+        let width = 0;
+        let uploadInterval = setInterval(()=>{
+            if(width >= 100){
+                clearInterval(uploadInterval);
+                alert("Podaci uspješno uploadani!");
+            } else {
+                width++;
+                bar.style.width = width + "%";
+                bar.textContent = width + "%";
+            }
+        }, 50); // ~5 sekundi animacije
+    } else {
+        msg.textContent = "❌ Pogrešno! Oduzeto 2 minute.";
+        wrongAnswer();
+    }
+}
+
+// ----- POKRENI PRVU RAZINU -----
+typeText("text1", levelTexts[0]);
+
+// ----- EVENT LISTENERS -----
+document.getElementById("ans1Btn").addEventListener("click", provjeri1);
+document.getElementById("ans2Btn").addEventListener("click", provjeri2);
+document.getElementById("ans3Btn").addEventListener("click", provjeri3);
+document.getElementById("ans4Btn").addEventListener("click", provjeri4);
+document.getElementById("ans5Btn").addEventListener("click", provjeri5);
+document.getElementById("ans6Btn").addEventListener("click", provjeri6);
+document.getElementById("ans7Btn").addEventListener("click", provjeri7);
+
+</script>
+</body>
+</html>
