@@ -137,7 +137,7 @@ let countdown = setInterval(()=>{
 
 // ----- POGREŠAN ODGOVOR -----
 function wrongAnswer(){
-    totalSeconds -= 120; // oduzmi 2 minute
+    totalSeconds -= 300; // oduzmi 5 minuta
     if(totalSeconds < 0) totalSeconds = 0;
     timerElement.style.color = "red";
     setTimeout(()=>{ timerElement.style.color="#00ff00"; },500);
@@ -181,7 +181,7 @@ function checkAnswer(inputId, correct, msgId, currentLevel, nextLevel, nextTextI
             },500);
         }
     } else {
-        msg.textContent = "❌ Pogrešno! Oduzeto 2 minute.";
+        msg.textContent = "❌ Pogrešno! Oduzeto 5 minuta.";
         wrongAnswer();
     }
 }
@@ -219,7 +219,7 @@ function provjeri7(){
             }
         }, 50); // ~5 sekundi animacije
     } else {
-        msg.textContent = "❌ Pogrešno! Oduzeto 2 minute.";
+        msg.textContent = "❌ Pogrešno! Oduzeto 5 minuta.";
         wrongAnswer();
     }
 }
@@ -239,6 +239,7 @@ document.getElementById("ans7Btn").addEventListener("click", provjeri7);
 </script>
 </body>
 </html>
+
 
 
 
