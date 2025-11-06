@@ -70,7 +70,8 @@ table td, table th {border:1px solid #00ff00; padding:10px; text-align:center;}
     <div id="level6" class="level">
         <div id="text6">
 Razina 6: Šifra u matrici<br>
-Upiši riječ prema koordinatama: A1, A2, A3, A4, E5, B5, B2, B3
+Upiši riječ prema koordinatama: <br>
+        A1, A2, A3, A4, E5, B5, B2, B3
         </div>
 
         <table>
@@ -135,7 +136,7 @@ let countdown = setInterval(()=>{
 
 // ----- POGREŠAN ODGOVOR -----
 function wrongAnswer(){
-    totalSeconds -= 120; // oduzmi 2 minute
+    totalSeconds -= 300; // oduzmi 5 minuta
     if(totalSeconds < 0) totalSeconds = 0;
     timerElement.style.color = "red";
     setTimeout(()=>{ timerElement.style.color="#00ff00"; },500);
@@ -179,7 +180,7 @@ function checkAnswer(inputId, correct, msgId, currentLevel, nextLevel, nextTextI
             },500);
         }
     } else {
-        msg.textContent = "❌ Pogrešno! Oduzeto 2 minute.";
+        msg.textContent = "❌ Pogrešno! Oduzeto 5 minuta.";
         wrongAnswer();
     }
 }
@@ -217,7 +218,7 @@ function provjeri7(){
             }
         }, 50); // ~5 sekundi animacije
     } else {
-        msg.textContent = "❌ Pogrešno! Oduzeto 2 minute.";
+        msg.textContent = "❌ Pogrešno! Oduzeto 5 minuta.";
         wrongAnswer();
     }
 }
@@ -237,4 +238,5 @@ document.getElementById("ans7Btn").addEventListener("click", provjeri7);
 </script>
 </body>
 </html>
+
 
